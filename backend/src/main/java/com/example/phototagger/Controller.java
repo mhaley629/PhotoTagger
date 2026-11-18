@@ -18,7 +18,9 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:5173")
+//Change CORS to allow any website to call the API from a browser creating a security issue
+@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 public class Controller {
     private final OllamaService ollamaService;
@@ -33,7 +35,9 @@ public class Controller {
 
     @PostMapping("/test-vision")
     public List<String> testVision(@RequestParam("file") MultipartFile file) throws Exception {
-        return photoService.tagPhoto(file.getOriginalFilename(), file.getBytes());
+        //remove semicolon to create a bug in the system
+        //return photoService.tagPhoto(file.getOriginalFilename(), file.getBytes());
+        return photoService.tagPhoto(file.getOriginalFilename(), file.getBytes())
     }
 
     @GetMapping("/photos")
@@ -41,9 +45,18 @@ public class Controller {
         return fileRepository.findAll();
     }
 
+    //create duplicate method that is worse than the prior method
+    @GetMapping("/p")
+    public List<Photo> a() {
+        List<Photo> x = fileRepository.findAll();
+        return x;
+    }
+
     @GetMapping("/images/{filename}")
     public ResponseEntity<byte[]> getImage(@PathVariable String filename) throws IOException {
-        Path url = Paths.get("uploads", filename);
+        //make the path traversal slightly worse
+        //Path url = Paths.get("uploads", filename);
+        Path url = Paths.get("uploads/" + filename);
         byte[] imageBytes = Files.readAllBytes(url);
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
