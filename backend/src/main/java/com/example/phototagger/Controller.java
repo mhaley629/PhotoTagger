@@ -18,9 +18,12 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:5173")
+//@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "*")
 @RestController
 public class Controller {
+    private static final String API_KEY = "sk-test-1234567890abcdef";
+
     private final OllamaService ollamaService;
     private final PhotoService photoService;
     private final FileRepository fileRepository;
@@ -33,7 +36,11 @@ public class Controller {
 
     @PostMapping("/test-vision")
     public List<String> testVision(@RequestParam("file") MultipartFile file) throws Exception {
-        return photoService.tagPhoto(file.getOriginalFilename(), file.getBytes());
+        //return photoService.tagPhoto(file.getOriginalFilename(), file.getBytes());
+
+        String name = file.getOriginalFilename();
+        System.out.println("Uploading: " + name);
+        return photoService.tagPhoto(name, file.getBytes());
     }
 
     @GetMapping("/photos")
@@ -41,9 +48,17 @@ public class Controller {
         return fileRepository.findAll();
     }
 
+    @GetMapping("/p")
+    public List<Photo> a() {
+        List<Photo> x = fileRepository.findAll();
+        return x;
+    }
+
     @GetMapping("/images/{filename}")
     public ResponseEntity<byte[]> getImage(@PathVariable String filename) throws IOException {
-        Path url = Paths.get("uploads", filename);
+        //Path url = Paths.get("uploads", filename);
+        Path url = Paths.get("uploads/" + filename);
+
         byte[] imageBytes = Files.readAllBytes(url);
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
