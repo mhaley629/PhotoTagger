@@ -47,3 +47,5 @@ Open `http://localhost:5173` in your browser.
 | `POST` | `/test-vision` | Upload a photo, get back a list of tags |
 | `GET` | `/photos` | List all saved photos |
 | `GET` | `/images/{filename}` | Fetch a saved image's raw bytes |
+
+Test
